@@ -3,30 +3,24 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux'
 import { Provider } from 'react-redux';
 import Store from '../store';
-import {loadHistory, addLink} from '../actions';
+import {loadHistory, shortenLink, updateHistoryStats} from '../actions';
+import {ShortenLinkForm, History} from '../components';
 
 class Root extends Component{
-  onSubmit(ev){
-    ev.preventDefault();
-    this.props.dispatch(addLink(new Date().toString()));
-  }
-  renderLinks(){
-    console.log('render fucking links!')
-    console.log(this.props);
-    return this.props.history.map((link, index)=><li key={index}>{link}</li>);
-  }
   render(){
+    const onSubmit=(url)=>{
+      this.props.dispatch(shortenLink(url));
+    }
     return(
       <div>
-        <a href="#" onClick={this.onSubmit.bind(this)}>Add Link</a>
-        <ul>
-          {this.renderLinks()}
-        </ul>
+        <ShortenLinkForm onSubmit={onSubmit} />
+        <History items={this.props.history} />
       </div>
     );
   }
   componentDidMount(){
     this.props.dispatch(loadHistory());
+    this.props.dispatch(updateHistoryStats());
   }
 }
 

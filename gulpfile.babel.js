@@ -5,8 +5,24 @@ import del from 'del';
 import babelify from 'babelify';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
+import Proxy from 'gulp-connect-proxy';
 import BrowserSync from 'browser-sync';
 const browserSync = BrowserSync.create();
+const proxyMiddleware = require('http-proxy-middleware');
+const statsProxy = proxyMiddleware('/statistics', {
+  target: 'http://gymia-shorty.herokuapp.com',
+  changeOrigin: true,
+  logLevel: 'debug',
+  pathRewrite : {
+    '^/statistics' : ''
+  }
+});
+
+const shortenProxy = proxyMiddleware('/shorten', {
+  target: 'http://gymia-shorty.herokuapp.com',
+  changeOrigin: true,
+  logLevel: 'debug',
+});
 
 
 
@@ -34,6 +50,7 @@ gulp.task('default', ['start-server'], function(){
     server : {
       baseDir : 'dist'
     },
+    middleware : [statsProxy, shortenProxy],
     port: 8082,
     ui : {
       port : 8081
