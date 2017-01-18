@@ -27,7 +27,7 @@ export const History = ({items})=>{
         <li key={item.shortcode}>
           {item.shortcode}<br/>
           {item.url}<br/>
-          {item.lastSeenDate}<br/>
+          {item.lastSeenDate && item.lastSeenDate.toString()}<br/>
           {item.redirectCount}
         </li>)}
     </ul>

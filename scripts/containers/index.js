@@ -3,8 +3,10 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux'
 import { Provider } from 'react-redux';
 import Store from '../store';
-import {loadHistory, shortenLink, updateHistoryStats} from '../actions';
+import {shortenLink, loadHistory} from '../actions';
+import * as storage from '../storage';
 import {ShortenLinkForm, History} from '../components';
+const maxHistoryItems = 10;
 
 class Root extends Component{
   render(){
@@ -14,13 +16,12 @@ class Root extends Component{
     return(
       <div>
         <ShortenLinkForm onSubmit={onSubmit} />
-        <History items={this.props.history} />
+        <History items={this.props.history.slice(0, maxHistoryItems)} />
       </div>
     );
   }
   componentDidMount(){
     this.props.dispatch(loadHistory());
-    this.props.dispatch(updateHistoryStats());
   }
 }
 

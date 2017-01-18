@@ -1,8 +1,11 @@
-import {UPDATE_HISTORY, UPDATE_HISTORY_ITEM } from '../actions';
+import {UPDATE_HISTORY, UPDATE_HISTORY_ITEM , ADD_HISTORY_ITEM} from '../actions';
 
 export const history = function(state = [], action){
   if(action.type === UPDATE_HISTORY){
     return action.history;
+  }
+  if(action.type === ADD_HISTORY_ITEM){
+    return [action.item, ...state];
   }
   if(action.type === UPDATE_HISTORY_ITEM){
     var newHistory = [];

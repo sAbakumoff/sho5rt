@@ -1,11 +1,10 @@
 import 'whatwg-fetch';
 
-var postUrl = '/shorten';
-var getUrl = '/statistics';
-const getStatsUrl = shortcode => `${getUrl}/${shortcode}/stats`;
+export const shortenUrl = '/shorten';
+export const getStatsUrl = '/stats';
 
-export const shortenUrl = function(url){
-  return fetch(postUrl, {
+export const shorten = function(url){
+  return fetch(shortenUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -22,7 +21,7 @@ export const shortenUrl = function(url){
 
 
 export const getStats = function(shortcode){
-  return fetch(getStatsUrl(shortcode)).then(response=>{
+  return fetch(`${getStatsUrl}/${shortcode}`).then(response=>{
     if (response.status >= 400)
       throw new Error('request failed with status ' + response.statusText);
     return  response.json();

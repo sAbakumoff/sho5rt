@@ -1,24 +1,41 @@
-const default_count = 10;
-const STATS_UPDATE_INTERVAL = 30 * 60 * 1000; // 30 minutes
 import * as storage from '../storage';
 import * as services from '../services';
 
-export const UPDATE_HISTORY = 'RECEIVE_HISTORY';
+export const UPDATE_HISTORY = 'UPDATE_HISTORY';
+const updateHistory = history=>({
+  type : UPDATE_HISTORY,
+  history : history
+})
 
-const updateHistory = (history, count=default_count)=>{
-  return {
-    type : UPDATE_HISTORY,
-    history : history.slice(0, count)
+export const UPDATE_HISTORY_ITEM = 'UPDATE_HISTORY_ITEM';
+const updateHistoryItemStats = itemStats=>({
+  type : UPDATE_HISTORY_ITEM,
+  itemStats : itemStats
+})
+
+export const ADD_HISTORY_ITEM = 'ADD_HISTORY_ITEM';
+const addHistoryItem = item=>({
+  type : ADD_HISTORY_ITEM,
+  item : item
+})
+
+export const shortenLink = (url)=>{
+  return (dispatch, getState)=>{
+    services.shorten(url).then((shortcode)=>{
+      dispatch(addHistoryItem({
+        url : url,
+        shortcode : shortcode,
+        lastSeenDate : new Date(),
+        redirectCount : 0
+      }))
+    }).then(()=>{
+      storage.setHistory(getState().history.map(item=>({shortcode : item.shortcode, url : item.url})));
+    }).catch((err)=>{
+      console.log("error", err);
+    })
   }
 }
 
-export const UPDATE_HISTORY_ITEM = 'UPDATE_HISTORY_ITEM';
-const updateHistoryItemStats = (itemStats)=>(
-  {
-    type : UPDATE_HISTORY_ITEM,
-    itemStats : itemStats
-  }
-)
 
 export const loadHistory = ()=>{
   return (dispatch)=>{
@@ -27,26 +44,6 @@ export const loadHistory = ()=>{
       dispatch(updateHistory(history));
     }).then(()=>dispatch(updateHistoryStats()))
     .catch(function(err){
-      console.log("error", err);
-    })
-  }
-}
-
-const addItemToHistory = (item)=>{
-  return (dispatch)=>{
-    storage.addItemToHistory(item).then(updatedHistory=>{
-      dispatch(updateHistory(updatedHistory));
-    }).catch((err)=>{
-      console.log("error", err);
-    })
-  }
-}
-
-export const shortenLink = (url)=>{
-  return (dispatch)=>{
-    services.shortenUrl(url).then((shortcode)=>{
-      dispatch(addItemToHistory({url : url, shortcode : shortcode}));
-    }).catch((err)=>{
       console.log("error", err);
     })
   }

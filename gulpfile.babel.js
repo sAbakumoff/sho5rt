@@ -8,22 +8,22 @@ import source from 'vinyl-source-stream';
 import Proxy from 'gulp-connect-proxy';
 import BrowserSync from 'browser-sync';
 const browserSync = BrowserSync.create();
-const proxyMiddleware = require('http-proxy-middleware');
-const statsProxy = proxyMiddleware('/statistics', {
+import proxyMiddleware from 'http-proxy-middleware';
+import {shortenUrl, getStatsUrl} from './scripts/services';
+
+const apiProxy = proxyMiddleware([shortenUrl, getStatsUrl], {
   target: 'http://gymia-shorty.herokuapp.com',
   changeOrigin: true,
   logLevel: 'debug',
-  pathRewrite : {
-    '^/statistics' : ''
+  pathRewrite : (path, req)=>{
+    if(path.indexOf(getStatsUrl)===0){
+      let updPath =  path.replace(getStatsUrl, '') + getStatsUrl;
+      console.log('new path', updPath);
+      return updPath;
+    }
+    return path;
   }
 });
-
-const shortenProxy = proxyMiddleware('/shorten', {
-  target: 'http://gymia-shorty.herokuapp.com',
-  changeOrigin: true,
-  logLevel: 'debug',
-});
-
 
 
 gulp.task('default', ['start-server'], function(){
@@ -50,7 +50,7 @@ gulp.task('default', ['start-server'], function(){
     server : {
       baseDir : 'dist'
     },
-    middleware : [statsProxy, shortenProxy],
+    middleware : [apiProxy],
     port: 8082,
     ui : {
       port : 8081
