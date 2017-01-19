@@ -1,4 +1,5 @@
 import React from 'react';
+import hdate from 'human-date';
 
 export const ShortenLinkForm = (props)=>{
   let urlInput = null;
@@ -27,8 +28,8 @@ export const History = ({items})=>{
         <li key={item.shortcode}>
           {item.shortcode}<br/>
           {item.url}<br/>
-          {item.lastSeenDate && item.lastSeenDate.toString()}<br/>
-          {item.redirectCount}
+          {item.stats && item.stats.startDate && hdate.relativeTime(item.stats.startDate)}<br/>
+          {item.stats && (item.redirectCount || 0)}
         </li>)}
     </ul>
   );

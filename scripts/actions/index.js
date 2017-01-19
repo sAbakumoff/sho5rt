@@ -1,60 +1,42 @@
-import * as storage from '../storage';
-import * as services from '../services';
+import reduxCrud from 'redux-crud';
+import * as api from '../api';
+import cuid from 'cuid';
 
-export const UPDATE_HISTORY = 'UPDATE_HISTORY';
-const updateHistory = history=>({
-  type : UPDATE_HISTORY,
-  history : history
-})
-
-export const UPDATE_HISTORY_ITEM = 'UPDATE_HISTORY_ITEM';
-const updateHistoryItemStats = itemStats=>({
-  type : UPDATE_HISTORY_ITEM,
-  itemStats : itemStats
-})
-
-export const ADD_HISTORY_ITEM = 'ADD_HISTORY_ITEM';
-const addHistoryItem = item=>({
-  type : ADD_HISTORY_ITEM,
-  item : item
-})
-
-export const shortenLink = (url)=>{
-  return (dispatch, getState)=>{
-    services.shorten(url).then((shortcode)=>{
-      dispatch(addHistoryItem({
-        url : url,
-        shortcode : shortcode,
-        lastSeenDate : new Date(),
-        redirectCount : 0
-      }))
-    }).then(()=>{
-      storage.setHistory(getState().history.map(item=>({shortcode : item.shortcode, url : item.url})));
-    }).catch((err)=>{
-      console.log("error", err);
-    })
-  }
-}
-
-
-export const loadHistory = ()=>{
-  return (dispatch)=>{
-    storage.getHistory().then(function(history){
-      history = history || [];
-      dispatch(updateHistory(history));
-    }).then(()=>dispatch(updateHistoryStats()))
-    .catch(function(err){
-      console.log("error", err);
-    })
-  }
-}
-
-export const updateHistoryStats = ()=>{
-  return (dispatch, getState)=>{
-    getState().history.forEach((item)=>{
-      services.getStats(item.shortcode).then(itemStats=>{
-        dispatch(updateHistoryItemStats(itemStats));
+const baseActionCreators = reduxCrud.actionCreatorsFor('history', {key : 'shortcode'});
+const asyncActionCreators = {
+  fetch(limit=5){
+    return (dispatch)=>{
+      dispatch(baseActionCreators.fetchStart());
+      api.getItems(limit).then(historyItems=>{
+        dispatch(baseActionCreators.fetchSuccess(historyItems));
+        historyItems.forEach(item=>{
+          dispatch(asyncActionCreators.update(item));
+        });
+      }, error=>{
+        dispatch(baseActionCreators.fetchError(error));
       });
-    });
+    }
+  },
+  create(url){
+    return (dispatch)=>{
+      dispatch(baseActionCreators.createStart({shortcode : cuid()}));
+      api.addItem(url).then((item)=>{
+        dispatch(baseActionCreators.createSuccess(item));
+      }, error=>{
+        dispatch(baseActionCreators.createError(error));
+      });
+    }
+  },
+  update(item){
+    return (dispatch)=>{
+      dispatch(baseActionCreators.updateStart({shortcode : item.shortcode}));
+      api.updateItemStats(item).then(item=>{
+        dispatch(baseActionCreators.updateSuccess(item));
+      }, error=>{
+        dispatch(baseActionCreators.updateError(error));
+      })
+    }
   }
 }
+
+export default Object.assign({}, asyncActionCreators, baseActionCreators);

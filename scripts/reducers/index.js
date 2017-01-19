@@ -1,24 +1,11 @@
-import {UPDATE_HISTORY, UPDATE_HISTORY_ITEM , ADD_HISTORY_ITEM} from '../actions';
+import reduxCrud from 'redux-crud';
+const baseReducers =  reduxCrud.reducersFor('history', {key: 'shortcode'});
+const actionTypes    = reduxCrud.actionTypesFor('history');
 
 export const history = function(state = [], action){
-  if(action.type === UPDATE_HISTORY){
-    return action.history;
+  switch (action.type) {
+    case actionTypes.createStart : return state;
+    case actionTypes.createSuccess: return [action.record, ...state.slice(0, state.length-1)]
+    default: return baseReducers(state, action)
   }
-  if(action.type === ADD_HISTORY_ITEM){
-    return [action.item, ...state];
-  }
-  if(action.type === UPDATE_HISTORY_ITEM){
-    var newHistory = [];
-    let itemStats = action.itemStats;
-    state.forEach(function(item){
-      if(item.shortcode === itemStats.shortcode){
-        newHistory.push(Object.assign({}, item, itemStats));
-      }
-      else{
-        newHistory.push(item);
-      }
-    })
-    return newHistory;
-  }
-  return state;
 }

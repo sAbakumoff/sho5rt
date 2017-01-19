@@ -6,10 +6,38 @@ localforage.config({
 
 const dataId = "shorten_history";
 
-export const getHistory = function(){
-  return localforage.getItem(dataId);
+export const getHistory = ()=>{
+  return(
+    localforage.getItem(dataId)
+    .then(history=>history || [])
+  );
 }
 
-export const setHistory = function(history){
-  return localforage.setItem(dataId, history);
+export const addHistoryItem = (item)=>{
+  return(
+    localforage.getItem(dataId)
+    .then((history)=>{
+      history=history || [];
+      history.unshift(item);
+      return localforage.setItem(dataId, history);
+    })
+    .then(()=>item)
+  );
+}
+
+export const updateHistoryItem = (item)=>{
+  return(
+    localforage.getItem(dataId)
+    .then((history)=>{
+      history=history || [];
+      let updatedHistory = history.map(current=>{
+        if(current.shortcode === item.shortcode)
+          return item;
+        else
+          return current;
+      });
+      return localforage.setItem(dataId, updatedHistory);
+    })
+    .then(()=>item)
+  );
 }
