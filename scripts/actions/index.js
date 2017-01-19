@@ -1,6 +1,5 @@
 import reduxCrud from 'redux-crud';
 import * as api from '../api';
-import cuid from 'cuid';
 
 const baseActionCreators = reduxCrud.actionCreatorsFor('history', {key : 'shortcode'});
 const asyncActionCreators = {
@@ -19,7 +18,7 @@ const asyncActionCreators = {
   },
   create(url){
     return (dispatch)=>{
-      dispatch(baseActionCreators.createStart({shortcode : cuid()}));
+      dispatch(baseActionCreators.createStart({shortcode : new Date().getTime()}));
       api.addItem(url).then((item)=>{
         dispatch(baseActionCreators.createSuccess(item));
       }, error=>{
@@ -34,6 +33,15 @@ const asyncActionCreators = {
         dispatch(baseActionCreators.updateSuccess(item));
       }, error=>{
         dispatch(baseActionCreators.updateError(error));
+      })
+    }
+  },
+  deleteAll(){
+    return (dispatch)=>{
+      api.deleteItems().then((history)=>{
+        dispatch(baseActionCreators.fetchSuccess(history));
+      }, error=>{
+        dispatch(baseActionCreators.deleteError(error));
       })
     }
   }

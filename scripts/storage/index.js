@@ -13,6 +13,12 @@ export const getHistory = ()=>{
   );
 }
 
+export const deleteHistory = ()=>{
+  return(
+    localforage.setItem(dataId, [])
+  );
+}
+
 export const addHistoryItem = (item)=>{
   return(
     localforage.getItem(dataId)

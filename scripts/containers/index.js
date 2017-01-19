@@ -11,10 +11,13 @@ class Root extends Component{
     const onSubmit=(url)=>{
       this.props.dispatch(actions.create(url));
     }
+    const onDeleteHistory=()=>{
+      this.props.dispatch(actions.deleteAll());
+    }
     return(
       <div>
         <ShortenLinkForm onSubmit={onSubmit} />
-        <History items={this.props.history} />
+        <History items={this.props.history} onClearClick={onDeleteHistory} />
       </div>
     );
   }

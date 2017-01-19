@@ -41,3 +41,9 @@ export const updateItemStats = (item)=>{
     .then(storage.updateHistoryItem)
   );
 }
+
+export const deleteItems = ()=>{
+  return(
+    storage.deleteHistory()
+  );
+}
