@@ -4,18 +4,20 @@ import { connect } from 'react-redux'
 import { Provider } from 'react-redux';
 import Store from '../store';
 import actions from '../actions';
-import {ShortenLinkForm, History} from '../components';
+import {ShortenLinkForm, History, Header} from '../components';
 
 class Root extends Component{
   render(){
     const onSubmit=(url)=>{
       this.props.dispatch(actions.create(url));
     }
-    const onDeleteHistory=()=>{
+    const onDeleteHistory=(ev)=>{
+      ev.preventDefault();
       this.props.dispatch(actions.deleteAll());
     }
     return(
       <div>
+        <Header />
         <ShortenLinkForm onSubmit={onSubmit} />
         <History items={this.props.history} onClearClick={onDeleteHistory} />
       </div>

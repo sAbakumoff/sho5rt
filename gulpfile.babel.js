@@ -54,4 +54,4 @@ gulp.task('default', ['start-server'], function(){
   });
 })
 .task('build-all', ['clean', 'build-js', 'copy-html-css'], function(){})
-.task('build-all-and-reload', [/*'build-js',*/ 'copy-html-css'],  function(){browserSync.reload()});
+.task('build-all-and-reload', ['build-js','copy-html-css'],  function(){browserSync.reload()});

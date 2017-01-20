@@ -6,7 +6,8 @@ body{
   background-color: #FBFAF9;
   font-family: 'Roboto', sans-serif;
   font-size : 16px;
-  font-weight : 300;
+  font-weight : 400;
+  color : #555;
 }
 
 #app-container{
@@ -37,11 +38,15 @@ body{
   width : 457px;
   height : 41px;
   background: #eaeaea;
-  padding: 18px;
+  padding-left: 18px;
 }
 
-.form__input:focus{
+:focus{
   outline: none;
+}
+
+::-moz-focus-inner{
+  border:0;
 }
 
 .form__submit{
@@ -66,7 +71,100 @@ body{
   margin-right : 25px;
 }
 
-.btn-history-clear{
+a{
   color : #eb4a43;
   text-decoration: none;
+  font-weight : 400;
+}
+
+.history-table{
+  width : 100%;
+  margin-top:44px;
+}
+
+.history-table__link-col{
+  width : 400px;
+}
+
+.history-table__highlight{
+  height : 100%;
+  left : -25px;
+  top : 0px;
+  position : absolute;
+  border-left-color: #eb4a43;
+  border-left-style: solid;
+  border-left-width: 4px;
+}
+
+.history-table th{
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size : 14px;
+  text-transform: uppercase;
+  color : #aaa;
+  padding-bottom:20px;
+  /*border : 1px solid #ccc;*/
+}
+
+.history-table th:first-child{
+  text-align : left;
+}
+
+.history-table td{
+  vertical-align: middle;
+  /*border : 1px solid #ccc;*/
+  padding-bottom: 20px;
+  padding-top: 20px;
+  position : relative;
+}
+
+.history-table__visits-col, .history-table__last-seen-col{
+  text-align : center;
+}
+
+.history-table__url{
+  color : #ccc;
+}
+
+.history-table__shortcode{
+  color : #eb4a43;
+  font-weight : 700;
+  margin-bottom : 13px;
+  cursor: pointer;
+}
+
+.history-table__domen{
+  color : #555;
+}
+
+.history-table__btn-copy{
+  margin-left:25px;
+}
+
+.header{
+  margin-top : 100px;
+  margin-bottom: 55px;
+}
+
+
+.header__title, .header__subtitle{
+  display : inline-block;
+  vertical-align: baseline;
+  width : 50%;
+}
+
+.header__subtitle{
+  text-align : right;
+}
+
+.header__title{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size : 47px;
+  text-decoration: underline;
+  color : #eb4a43;
+}
+
+.header__subtitle{
+  color : #aaa;
 }

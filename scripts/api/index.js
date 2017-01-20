@@ -17,7 +17,8 @@ export const getItems=(limit)=>{
   );
 }
 
-const initItem = (url, shortcode)=>({
+const initItem = (url, shortcode, id)=>({
+  _id : id,
   url : url,
   shortcode : shortcode,
   stats : {
@@ -26,10 +27,10 @@ const initItem = (url, shortcode)=>({
   }
 });
 
-export const addItem=(url)=>{
+export const addItem=(url, id)=>{
   return(
     services.shorten(url)
-    .then(shortcode=>initItem(url, shortcode))
+    .then(shortcode=>initItem(url, shortcode, id))
     .then(storage.addHistoryItem)
   );
 }
