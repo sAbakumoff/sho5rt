@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react';
 import hdate from 'human-date';
 import HistoryItem from './HistoryItem.react';
+import { connect } from 'react-redux';
 
 const HistoryTable = ({items, newItemId})=>{
-  console.log('items after fetch', items);
   return (
     <table className='history-table'>
       <thead className='history-table__header'>
@@ -17,7 +17,7 @@ const HistoryTable = ({items, newItemId})=>{
         {items.map((item, index)=>
           <tr key={item._id}>
             <td className={'history-table__link-col'}>
-              {item._id === newItemId && <div className='history-table__highlight'></div> }
+              {!item.pendingCreate && item._id === newItemId && <div className='history-table__highlight'></div> }
               <HistoryItem  {...item} />
             </td>
             <td className='history-table__visits-col'>
@@ -44,4 +44,12 @@ HistoryTable.propTypes = {
    }).isRequired).isRequired
 }
 
-export default HistoryTable;
+
+const mapStateToProps = (state)=>{
+  return{
+    newItemId : state.newItemId,
+    items : state.history
+  }
+}
+
+export default connect(mapStateToProps)(HistoryTable);

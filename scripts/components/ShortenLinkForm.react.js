@@ -1,11 +1,15 @@
 import React, {PropTypes} from 'react';
+import actions from '../actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-const ShortenLinkForm=({onAddItem})=>{
+
+const ShortenLinkForm=({onSubmit})=>{
   var urlInput, submitBtn;
 
   const handleSubmit = (ev)=>{
     ev.preventDefault();
-    onAddItem(urlInput.value);
+    onSubmit(urlInput.value);
     urlInput.value = '';
     submitBtn.setAttribute('disabled', null);
   }
@@ -40,7 +44,11 @@ const ShortenLinkForm=({onAddItem})=>{
 }
 
 ShortenLinkForm.propTypes = {
-  onAddItem : PropTypes.func.isRequired
+  onSubmit : PropTypes.func.isRequired
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ onSubmit : actions.create }, dispatch);
 }
 
-export default ShortenLinkForm;
+export default connect(null, mapDispatchToProps)(ShortenLinkForm);

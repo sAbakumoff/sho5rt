@@ -3,6 +3,21 @@ import * as api from '../api';
 import cuid from 'cuid';
 
 const baseActionCreators = reduxCrud.actionCreatorsFor('history', {key : '_id'});
+
+const initializeNew = (url)=>{
+  return {
+    _id : cuid(),
+    url : url,
+    shortcode : '',
+    stats : {
+      startDate : new Date(),
+      lastSeenDate : new Date(),
+      redirectCount : 0
+    }
+  }
+}
+
+
 const asyncActionCreators = {
   fetch(limit=5){
     return (dispatch)=>{
@@ -19,20 +34,22 @@ const asyncActionCreators = {
   },
   create(url){
     return (dispatch)=>{
-      let id = cuid();
-      dispatch(baseActionCreators.createStart({_id : id}));
-      api.addItem(url, id).then((item)=>{
-        dispatch(baseActionCreators.createSuccess(item));
+      let newItem = initializeNew(url);
+      dispatch(baseActionCreators.createStart(newItem));
+      api.addItem(newItem).then((item)=>{
+        setTimeout(()=>{
+        dispatch(baseActionCreators.createSuccess(item, item._id));
+        }, 2000);
       }, error=>{
-        dispatch(baseActionCreators.createError(error));
+        dispatch(baseActionCreators.createError(error, newItem));
       });
     }
   },
   update(item){
     return (dispatch)=>{
-      dispatch(baseActionCreators.updateStart({_id : item._id}));
+      dispatch(baseActionCreators.updateStart(item));
       api.updateItemStats(item).then(item=>{
-        dispatch(baseActionCreators.updateSuccess(item));
+        dispatch(baseActionCreators.updateSuccess(item))
       }, error=>{
         dispatch(baseActionCreators.updateError(error));
       })

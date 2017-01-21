@@ -96,6 +96,13 @@ a{
   border-left-width: 4px;
 }
 
+.history-table__newItem{
+  background-color : #ccc;
+  border-radius: 3px;
+  height : 12px;
+  width : 50%;
+}
+
 .history-table th{
   font-family: 'Roboto', sans-serif;
   font-weight: 400;

@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import copy from 'copy-to-clipboard';
 
-const HistoryItem = ({url, shortcode, displayUrlMaxLen = 50, shortcodeDomen='shooooort.com'})=>{
+const HistoryItem = ({pendingCreate, url, shortcode, displayUrlMaxLen = 50, shortcodeDomen='shooooort.com'})=>{
 
   const shortenUrl = 'http://gymia-shorty.herokuapp.com/' + shortcode;
 
@@ -10,29 +10,45 @@ const HistoryItem = ({url, shortcode, displayUrlMaxLen = 50, shortcodeDomen='sho
       displayUrl =  url.substring(0, displayUrlMaxLen) + "...";
   }
 
+  let linkCopy;
+
+  const isAlive = !pendingCreate;
+
   const handleMouseClick = (ev)=>{
     ev.preventDefault();
+    if(pendingCreate)
+      return;
     copy(shortenUrl, {debug : true});
   }
 
-  let linkCopy;
+  const handleMouseEnter = ()=>{
+    if(linkCopy && linkCopy.style)
+      linkCopy.style.visibility='visible';
+  }
+
+  const handleMouseLeave = ()=>{
+    if(linkCopy && linkCopy.style)
+      linkCopy.style.visibility='hidden';
+  }
 
   return (
     <div>
       <div
         className='history-table__shortcode'
-        onMouseEnter={()=>{linkCopy.style.visibility='visible'}}
+        onMouseEnter={handleMouseEnter}
         onClick={handleMouseClick}
-        onMouseLeave={()=>{linkCopy.style.visibility='hidden'}}>
-          <span className='history-table__domen'>{shortcodeDomen}/</span>
-          <span>{shortcode}</span>
-          <a
+        onMouseLeave={handleMouseLeave}>
+          {!isAlive && <div className='history-table__newItem'></div>}
+          {isAlive && <span className='history-table__domen'>{shortcodeDomen}/</span>}
+          {isAlive && <span>{shortcode}</span>}
+          {isAlive && <a
             href='#'
             style = {{visibility : 'hidden'}}
             ref={el=>{linkCopy=el}}
             className='history-table__btn-copy'>
               Click to copy this link
           </a>
+          }
       </div>
       <div className='history-table__url'>{displayUrl}</div>
     </div>

@@ -17,20 +17,10 @@ export const getItems=(limit)=>{
   );
 }
 
-const initItem = (url, shortcode, id)=>({
-  _id : id,
-  url : url,
-  shortcode : shortcode,
-  stats : {
-    startDate : new Date(),
-    lastSeenDate : new Date()
-  }
-});
-
-export const addItem=(url, id)=>{
+export const addItem=(newItem)=>{
   return(
-    services.shorten(url)
-    .then(shortcode=>initItem(url, shortcode, id))
+    services.shorten(newItem.url)
+    .then(shortcode=>Object.assign({}, newItem, {shortcode : shortcode}))
     .then(storage.addHistoryItem)
   );
 }
