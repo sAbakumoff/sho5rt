@@ -4,13 +4,18 @@ const actionTypes    = reduxCrud.actionTypesFor('history');
 
 export const history = function(state = [], action){
   switch (action.type) {
+    // the built-in redux-crud reducers use the "pending update items" on create/update start, prevent that to happen!
+    case actionTypes.updateStart :
     case actionTypes.createStart : return state;
-    case actionTypes.createSuccess:
-      let updatedCollection = state.map(current=>{
-        return current._new ? Object.assign({},current, {_new : false}) : current;
-      })
-      return [Object.assign({_new : true}, action.record), ...updatedCollection];
-    case actionTypes.fetchSuccess : return action.records.slice();
+    // always put the new records on the top of the displayed history
+    case actionTypes.createSuccess : return [action.record, ...state];
     default: return baseReducers(state, action)
   }
+}
+
+export const newItemId = function(id=null, action){
+  if(action.type === actionTypes.createSuccess){
+    return action.record._id;
+  }
+  return id;
 }

@@ -4,31 +4,45 @@ import { connect } from 'react-redux'
 import { Provider } from 'react-redux';
 import Store from '../store';
 import actions from '../actions';
-import {ShortenLinkForm, History, Header} from '../components';
+import {ShortenLinkForm, History, AppHeader} from '../components';
 
 class Root extends Component{
   render(){
-    const onSubmit=(url)=>{
-      this.props.dispatch(actions.create(url));
-    }
-    const onDeleteHistory=(ev)=>{
-      ev.preventDefault();
-      this.props.dispatch(actions.deleteAll());
-    }
-    return(
+    return (
       <div>
-        <Header />
-        <ShortenLinkForm onSubmit={onSubmit} />
-        <History items={this.props.history} onClearClick={onDeleteHistory} />
+        <AppHeader />
+        <ShortenLinkForm {...this.props} />
+        <History {...this.props} />
       </div>
     );
   }
   componentDidMount(){
-    this.props.dispatch(actions.fetch());
+    this.props.onLoad();
   }
 }
 
-var RootConnector = connect(state=>state)(Root);
+const mapDispatchToProps = (dispatch)=>{
+  return{
+    onDeleteHistory : ()=>{
+      dispatch(actions.deleteAll());
+    },
+    onAddItem : (url)=>{
+      dispatch(actions.create(url));
+    },
+    onLoad : ()=>{
+      dispatch(actions.fetch());
+    }
+  }
+}
+
+const mapStateToProps = (state)=>{
+  return{
+    newItemId : state.newItemId,
+    items : state.history
+  }
+}
+
+var RootConnector = connect(mapStateToProps, mapDispatchToProps)(Root);
 
 export default (initialState)=>{
   return ()=>(
