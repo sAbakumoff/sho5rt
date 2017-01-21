@@ -2,11 +2,11 @@ import React from 'react';
 import HistoryHeader from './HistoryHeader.react';
 import HistoryTable from './HistoryTable.react'
 
-const History = (props)=>{
+const History = ()=>{
   return(
     <div className='history'>
-      <HistoryHeader {...props} />
-      <HistoryTable {...props} />
+      <HistoryHeader />
+      <HistoryTable />
     </div>
   )
 }
