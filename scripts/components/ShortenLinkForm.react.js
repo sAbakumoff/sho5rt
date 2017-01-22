@@ -1,8 +1,4 @@
 import React, {PropTypes} from 'react';
-import actions from '../actions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 
 const ShortenLinkForm=({onSubmit})=>{
   var urlInput, submitBtn;
@@ -47,8 +43,4 @@ ShortenLinkForm.propTypes = {
   onSubmit : PropTypes.func.isRequired
 };
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ onSubmit : actions.create }, dispatch);
-}
-
-export default connect(null, mapDispatchToProps)(ShortenLinkForm);
+export default ShortenLinkForm;

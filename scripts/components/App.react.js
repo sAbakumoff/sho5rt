@@ -5,28 +5,31 @@ import { bindActionCreators } from 'redux';
 import AppHeader from './AppHeader.react';
 import ShortenLinkForm from './ShortenLinkForm.react';
 import History from './History.react';
+import ErrorPanel from './ErrorPanel.react';
 
 class App extends Component{
   render(){
+    let actionCreators = bindActionCreators({
+      onSubmit : actions.create,
+      onDeleteAll :   actions.deleteAll,
+      onResetError : actions.resetCreateError
+    }, this.props.dispatch);
     return (
       <div>
+        <ErrorPanel {...actionCreators} />
         <AppHeader />
-        <ShortenLinkForm />
-        <History />
+        <ShortenLinkForm {...actionCreators} />
+        <History {...actionCreators} />
       </div>
     );
   }
   componentDidMount(){
-    this.props.onLoad();
+    this.props.dispatch(actions.fetch(this.props.displayHistoryLen));
   }
 }
 
-App.propTypes = {
-  onLoad : PropTypes.func.isRequired
-};
-
-const mapDispatchToProps = dispatch => {
-  return  bindActionCreators({ onLoad : actions.fetch }, dispatch);
+App.defaultProps = {
+  displayHistoryLen : 5
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect()(App);

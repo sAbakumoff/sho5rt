@@ -1,12 +1,9 @@
 import React, {PropTypes} from 'react';
-import actions from '../actions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
-const HistoryHeader = ({onDelete})=>{
+const HistoryHeader = ({onDeleteAll})=>{
   const onClearClick=(ev)=>{
     ev.preventDefault();
-    onDelete();
+    onDeleteAll();
   }
   return(
     <div>
@@ -21,11 +18,7 @@ const HistoryHeader = ({onDelete})=>{
 }
 
 HistoryHeader.propTypes = {
-  onDelete : PropTypes.func.isRequired
+  onDeleteAll : PropTypes.func.isRequired
 }
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({onDelete : actions.deleteAll}, dispatch);
-}
-
-export default connect(null, mapDispatchToProps)(HistoryHeader);
+export default HistoryHeader;

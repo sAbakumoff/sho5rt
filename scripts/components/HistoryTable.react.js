@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
 import hdate from 'human-date';
 import HistoryItem from './HistoryItem.react';
-import { connect } from 'react-redux';
 
 const HistoryTable = ({items, newItemId})=>{
   return (
@@ -44,12 +43,4 @@ HistoryTable.propTypes = {
    }).isRequired).isRequired
 }
 
-
-const mapStateToProps = (state)=>{
-  return{
-    newItemId : state.newItemId,
-    items : state.history
-  }
-}
-
-export default connect(mapStateToProps)(HistoryTable);
+export default HistoryTable;

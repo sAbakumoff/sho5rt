@@ -175,3 +175,19 @@ a{
 .header__subtitle{
   color : #aaa;
 }
+
+.error{
+  padding: 10px;
+  background: #eb4a43;
+  color : white;
+  font-weight: 600;
+  font-size : 16px;
+  text-align : center;
+  border-radius: 3px;
+}
+
+.error__retry{
+  color:white;
+  font-weight: 700;
+  margin-left : 25px;
+}

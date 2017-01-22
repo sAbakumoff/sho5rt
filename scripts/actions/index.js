@@ -4,6 +4,11 @@ import cuid from 'cuid';
 
 const baseActionCreators = reduxCrud.actionCreatorsFor('history', {key : '_id'});
 
+export const actionTypes = Object.assign({}, reduxCrud.actionTypesFor('history'), {
+  deleteAll  : 'HISTORY_DELETE_ALL',
+  resetCreateError : 'RESET_CREATE_ERROR'
+});
+
 const initializeNew = (url)=>{
   return {
     _id : cuid(),
@@ -39,9 +44,9 @@ const asyncActionCreators = {
       api.addItem(newItem).then((item)=>{
         setTimeout(()=>{
         dispatch(baseActionCreators.createSuccess(item, item._id));
-        }, 2000);
+        }, 300); //to demo the optimistic updates approach
       }, error=>{
-        dispatch(baseActionCreators.createError(error, newItem));
+        dispatch(baseActionCreators.createError('The error occurred while shortening the url', newItem));
       });
     }
   },
@@ -57,12 +62,15 @@ const asyncActionCreators = {
   },
   deleteAll(){
     return (dispatch)=>{
+      dispatch({type : actionTypes.deleteAll})
       api.deleteItems().then((history)=>{
-        dispatch(baseActionCreators.fetchSuccess(history));
       }, error=>{
-        dispatch(baseActionCreators.deleteError(error));
+        // ignore any errors, but maybe show a warning
       })
     }
+  },
+  resetCreateError(){
+    return {type : actionTypes.resetCreateError};
   }
 }
 
